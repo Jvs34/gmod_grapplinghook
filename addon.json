@@ -1,10 +1,13 @@
 {
+    "description": "It's a grappling hook! Press use on it and hold G on your keyboard to use it.\n\nYou can unequip it by using \"pe_drop sent_grapplehook_bpack\" in the console or by dying, there will be a panel for that in the future.",
     "ignore": [
         ".git*",
         "README.md",
         "logo.*"
     ],
+    "logo": "logo.jpg",
     "tags": [],
     "title": "Grappling Hook",
-    "type": "entity"
+    "type": "entity",
+    "workshopid": 931448005.0
 }
