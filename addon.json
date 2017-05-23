@@ -1,0 +1,10 @@
+{
+    "ignore": [
+        ".git*",
+        "README.md",
+        "logo.*"
+    ],
+    "tags": [],
+    "title": "Grappling Hook",
+    "type": "entity"
+}
