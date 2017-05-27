@@ -134,6 +134,7 @@ function ENT:Initialize()
 		
 		self:SetPullMode( 1 )
 		self:SetPullSpeed( 2000 )
+		self:SetEntityPullForce( 500 )
 		self:SetKey( KEY_G )	--the starting key to trigger us
 		self:InitPhysics()
 		
@@ -164,6 +165,7 @@ function ENT:SetupDataTables()
 	self:DefineNWVar( "Float" , "GrappleFraction" )
 	--self:DefineNWVar( "Float" , "GrappleLength" )
 	self:DefineNWVar( "Float" , "GrappleFractionBeforeReturn" )
+	self:DefineNWVar( "Float" , "EntityPullForce" , true , "Entity Pull Force" , 0 , 1000 ) --we're not gonna scale the pull force by the entity scale or anything of the sorts, we'll just use a plain value
 	
 	self:DefineNWVar( "Int" , "PullMode" ) --, true , "Pull mode" , 1 , 4 )
 	
@@ -174,7 +176,7 @@ function ENT:SetupDataTables()
 	self:DefineNWVar( "Bool" , "AttachSoundPlayed" )
 	self:DefineNWVar( "Bool" , "HookMissed" )
 	self:DefineNWVar( "Bool" , "UseChainRope" , true, "Use Chain" )
-	
+	self:DefineNWVar( "Bool" , "CanPullEntities" , true , "Can Pull Entities" )
 	
 	self:DefineNWVar( "Entity" , "HookHelper" )
 	self:DefineNWVar( "Entity" , "AttachedEntity" )
@@ -267,7 +269,7 @@ function ENT:HandleDetach( predicted , mv )
 		
 		if self:GetAttachedEntity() ~= NULL then
 		--check the entity's physobj, if it was unfrozen even for a frame, detach us
-		
+			
 		end
 		
 		if self:ShouldStopPulling( mv ) then
@@ -471,7 +473,7 @@ function ENT:GetDirection()
 end
 
 --TODO: if we attach to an entity, we should also store it in a dtvar so we constantly check if it's physobj was removed (or even just the entity itself)
-function ENT.HookTraceFilter( ent )
+function ENT:HookTraceFilter( ent )
 	
 	if not IsValid( ent ) then
 		return
@@ -528,7 +530,9 @@ function ENT:DoHookTrace( checkdetach )
 	]]
 	
 	local tr = {
-		filter = self.HookTraceFilter,
+		filter = function( filterent ) 
+			return self:HookTraceFilter( filterent )
+		end,
 		mask = MASK_SOLID,	--anything that is solid can stop the trace
 		start = startpos,
 		endpos = endpos,
